@@ -1,0 +1,14 @@
+body {
+  background-color: rgb(173, 206, 195);
+}
+
+label {
+  display: flex;
+  align-items: center;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.center-box {
+  margin: 20%;
+}
