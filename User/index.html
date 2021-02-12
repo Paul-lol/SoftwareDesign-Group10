@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fuel Prediction Project</title>
+        <link rel="stylesheet" href="index.css">
+    </head>
+
+    <center><br><br>
+    
+    <img class="img-responsive" width="450" height="450" src="ludidomo.png"></center>
+<br><br><br>
+<center>
+    
+    <h1>Welcome to DOJ Fuel Industry Inc.<br></h1>
+    <h2>Get your Fuel Quote Now!</h2>
+<br>
+<button onclick="document.getElementById('id01').style.display='block'" style="width:150px; height: 50px" >Login</button>
+
+<div id="id01" class="modal">
+  
+  <form class="modal-content animate" action="action_page.php">
+    <div class="imgcontainer">
+      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+    
+    </div>
+
+    <div class="container">
+      <label><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="uname">
+
+      <label><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw">
+     
+      <button type="button" onClick="location.href='2.html'">Login</button>
+   
+      </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+      <span class="psw">New user? <a href="profile.html">Click here</a></span>
+      
+    </div>
+
+</div>
+</center>
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>
