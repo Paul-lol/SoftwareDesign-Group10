@@ -1,7 +1,7 @@
 /* Remove the navbar's default margin-bottom and rounded borders */
 
 * {
-  font-size: x-large;
+  font-size: x-small;
   font-family: Helvetica, sans-serif;
 }
 .navbar {

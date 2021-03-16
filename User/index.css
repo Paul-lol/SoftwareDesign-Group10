@@ -130,3 +130,17 @@ span.psw {
        width: 100%;
     }
 }
+
+::-webkit-input-placeholder {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+:-ms-input-placeholder {
+  font-weight: bold;
+  font-size: 17px; 
+}
+
+input {
+  font-family: montserrat;
+}
