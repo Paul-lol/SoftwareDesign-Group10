@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel ="stylesheet" href="css/home.css">
+</head>
+<body>
+    <div class="topnav">
+        <a class="active" href="home.html">Home</a>
+        <a href="editProfile.html">Profile</a>
+        <a href="fuel_quote.html">Fuel Quote Form</a>
+        <a href="history.html">Quote History</a>
+          <!--<ul class="nav navbar-nav navbar-right">
+        <li><a href="index.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>-->
+      </ul>
+      </div>
+       
+<h1>Hi <%= name %></h1>
+<div id="container">
+    <center>
+    <h1 style="color:rgb(139, 39, 0)" > DOJ Fuel Industry Inc. </h3>
+    </center>
+        <div id="main">
+            <div class="button">
+                <a href="editProfile.html" class="btn">View / Edit Profile</a>
+                <a href="fuel_quote.html" class="btn">Request a Quote</a>
+                <a href="history.html" class="btn">View Quote History</a>
+                <br><br><br><br><br><center>
+                <form action = "/logout?_method=DELETE" method="POST">
+                    <button type="submit" class="btn btn-large">Log Out</button>
+                </form>
+            </center>
+            </div>
+        </div>
+</div>
+
+<footer class="container-fluid text-center">
+    <img class="img-rounded" width="80" height="80" src="css/doj.png"><p>DOJ Fuel Industry Inc.</p>
+  <p>All Rights Reserved (2021)</p>
+</footer>
+
+</body>
+</html>
