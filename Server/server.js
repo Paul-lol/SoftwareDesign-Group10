@@ -30,7 +30,7 @@ let userInfo = {
 };
 app.use(express.static('public'));
 
-
+app.use(bodyParser.urlencoded({extended:true}));
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded( { extended: false}))
 app.use(flash())
@@ -61,7 +61,7 @@ app.get('/register', checknotAuthenticated, (req, res) => {
     res.render('register.ejs')
 })
 
-app.get('/profile', checknotAuthenticated, (req,res) => {
+app.get('/profile', checkAuthenticated, (req,res) => {
     res.render('profile.ejs', {full_name: userInfo.full_name, 
     street1: userInfo.street1, 
     street2: userInfo.street2,
@@ -83,15 +83,17 @@ app.post('/register', checknotAuthenticated, async (req, res) => {
     }
 })
 
-app.get('/editProfile', checknotAuthenticated, (req, res) => {
+
+app.get('/editProfile', checkAuthenticated, (req, res) => {
     res.render('editProfile.ejs');
 })
 
-app.post('/editProfile',checknotAuthenticated, (req,res) => {
-    res.send(`${req.body.full_name} thank you for posting your information`)
-    //userInfo = req.body;
-    console.log(req.body);
+app.post('/editProfile', checkAuthenticated, (req,res) => {
+    userInfo = req.body;
+    console.log(userInfo);
+    res.redirect('/profile');
 })
+
 app.delete('/logout', (req, res) => {
     req.logOut()
     res.redirect('/login')
