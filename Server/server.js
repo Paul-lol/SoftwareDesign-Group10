@@ -129,48 +129,26 @@ app.get('/api/history', (req, res) => res.json(hist));
 
 app.get('/history', checkAuthenticated, (req, res) => {
     res.render('history.ejs', {hist: hist});
-    /*
-    res.render('history.ejs', {gallons1: hist[0].gallons,
-    d_a1: hist[0].d_address,
-    date1: hist[0].d_date,
-    per1: hist[0].price_per,
-    total1: hist[0].total,
-    gallons2: hist[1].gallons,
-    d_a2: hist[1].d_address,
-    date2: hist[1].d_date,
-    per2: hist[1].price_per,
-    total2: hist[1].total,
-    gallons3: hist[2].gallons,
-    d_a3: hist[2].d_address,
-    date3: hist[2].d_date,
-    per3: hist[2].price_per,
-    total3: hist[2].total
-    });
-    */
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {
     res.render('fuel_quote.ejs', {address1: userInfo.street1});
 })
-let fuel_quote = {
-    gallons_requested: 0,
-    delivery_address: '',
-    delivery_date: '',
-    price_per_gallon: '',
-    total_due: ''
-};
+
+function Fuel_quote(gallons, d_address, d_date, price_per, total) { 
+    this.gallons = gallons; 
+    this.d_address = d_address;
+    this.d_date = d_date;
+    this.price_per = price_per;
+    this.total = total;
+}
 app.post('/fuel_quote', checkAuthenticated, (req,res) => {
-    //I used the fuelquote variable to populate the hist array
-    // I should have instantiated the fuelquote object as a new object each time but my programming skills are not up to par rn
-    //Errors: on the app, it just repeats the last item I added to the list and thats the error right now. 
-    //I created new member variables to match the description so it can render correctly on history page, I should have made a new fuel_quote object but i was lazy lol. 
-    //fuel_quote = req.body;
-    fuel_quote.gallons = req.body.gallons_requested;
-    fuel_quote.d_address = req.body.delivery_address;
-    fuel_quote.d_date = req.body.delivery_date;
-    fuel_quote.price_per = req.body.price_per_gallon;
-    fuel_quote.total = req.body.total_due;
-    hist.push(fuel_quote);
-    console.log(fuel_quote);
+    let fuel = new Fuel_quote(req.body.gallons_requested, 
+        req.body.delivery_address, 
+        req.body.delivery_date, 
+        req.body.price_per_gallon, 
+        req.body.total_due);
+    hist.push(fuel);
+    console.log(fuel);
     res.redirect('/history');
 })
 
@@ -179,7 +157,6 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()){
         return next()
     }
-
     res.redirect('/login')
 }
 
