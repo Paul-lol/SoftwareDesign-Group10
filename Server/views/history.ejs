@@ -42,34 +42,15 @@
           </tr>
         </thead>
         <!-- Dummy Values just for front end -->
-        <tr>
-            <td><%= gallons1 %></td>
-            <td><%= d_a1 %></td>
-            <td><%= date1 %></td>
-            <td><%= per1 %></td>
-            <td><b><%= total1 %></b></td>
-        </tr>
-        <tr>
-            <td><%= gallons2 %></td>
-            <td><%= d_a2 %></td>
-            <td><%= date2 %></td>
-            <td><%= per2 %></td>
-            <td><b><%= total2 %></b></td>
-        </tr>
-        <tr>
-            <td><%= gallons3 %></td>
-            <td><%= d_a3 %></td>
-            <td><%= date3 %></td>
-            <td><%= per3 %></td>
-            <td><b><%= total3 %></b></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><b></b></td>
-        </tr>
+        <% for(let i = 0; i < hist.length; i++) {%>
+            <tr> 
+                <td><%= hist[i].gallons %></td>
+                <td><%= hist[i].d_date %></td>
+                <td><%= hist[i].d_address%></td>
+                <td><%= hist[i].price_per%></td>
+                <td><%= hist[i].total%></td>
+            </tr>
+            <% } %>
         
         <!-- Dynamic Table implemented in Javascript -->
         <tbody id="dynamic-table-fuel">

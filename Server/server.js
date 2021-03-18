@@ -128,6 +128,8 @@ const hist = [
 app.get('/api/history', (req, res) => res.json(hist));
 
 app.get('/history', checkAuthenticated, (req, res) => {
+    res.render('history.ejs', {hist: hist});
+    /*
     res.render('history.ejs', {gallons1: hist[0].gallons,
     d_a1: hist[0].d_address,
     date1: hist[0].d_date,
@@ -144,6 +146,7 @@ app.get('/history', checkAuthenticated, (req, res) => {
     per3: hist[2].price_per,
     total3: hist[2].total
     });
+    */
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {
     res.render('fuel_quote.ejs', {address1: userInfo.street1});
@@ -156,7 +159,17 @@ let fuel_quote = {
     total_due: ''
 };
 app.post('/fuel_quote', checkAuthenticated, (req,res) => {
-    fuel_quote = req.body;
+    //I used the fuelquote variable to populate the hist array
+    // I should have instantiated the fuelquote object as a new object each time but my programming skills are not up to par rn
+    //Errors: on the app, it just repeats the last item I added to the list and thats the error right now. 
+    //I created new member variables to match the description so it can render correctly on history page, I should have made a new fuel_quote object but i was lazy lol. 
+    //fuel_quote = req.body;
+    fuel_quote.gallons = req.body.gallons_requested;
+    fuel_quote.d_address = req.body.delivery_address;
+    fuel_quote.d_date = req.body.delivery_date;
+    fuel_quote.price_per = req.body.price_per_gallon;
+    fuel_quote.total = req.body.total_due;
+    hist.push(fuel_quote);
     console.log(fuel_quote);
     res.redirect('/history');
 })
