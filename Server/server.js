@@ -34,6 +34,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded( { extended: false}))
 app.use(flash())
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -98,6 +99,69 @@ app.delete('/logout', (req, res) => {
     req.logOut()
     res.redirect('/login')
 })
+
+
+// hardcoded value for history
+const hist = [
+    {
+        gallons: 101,
+        d_address: '4800 Calhoun Rd, Houston, TX 77204-2610',
+        d_date: '02/14/2021',
+        price_per: 2.19,
+        total: 221.19
+    },
+    {
+        gallons: 135,
+        d_address: '6060 N Fry Rd, Katy, TX 77449',
+        d_date: '02/13/2021',
+        price_per: 2.35,
+        total: 317.25
+    },
+    {
+        gallons: 276,
+        d_address: '1234 Dummy Values, Houston, TX 77123',
+        d_date: '01/29/2021',
+        price_per: 2.40,
+        total: 662.40
+    }
+]
+// Gets fuel quote history
+app.get('/api/history', (req, res) => res.json(hist));
+
+app.get('/history', checkAuthenticated, (req, res) => {
+    res.render('history.ejs', {gallons1: hist[0].gallons,
+    d_a1: hist[0].d_address,
+    date1: hist[0].d_date,
+    per1: hist[0].price_per,
+    total1: hist[0].total,
+    gallons2: hist[1].gallons,
+    d_a2: hist[1].d_address,
+    date2: hist[1].d_date,
+    per2: hist[1].price_per,
+    total2: hist[1].total,
+    gallons3: hist[2].gallons,
+    d_a3: hist[2].d_address,
+    date3: hist[2].d_date,
+    per3: hist[2].price_per,
+    total3: hist[2].total
+    });
+})
+app.get('/fuel_quote', checkAuthenticated, (req, res) => {
+    res.render('fuel_quote.ejs', {address1: userInfo.street1});
+})
+let fuel_quote = {
+    gallons_requested: 0,
+    delivery_address: '',
+    delivery_date: '',
+    price_per_gallon: '',
+    total_due: ''
+};
+app.post('/fuel_quote', checkAuthenticated, (req,res) => {
+    fuel_quote = req.body;
+    console.log(fuel_quote);
+    res.redirect('/history');
+})
+
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()){
