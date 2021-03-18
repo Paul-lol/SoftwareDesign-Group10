@@ -13,11 +13,11 @@
     <div class="topnav">
         <a class="active" href="/">Home</a>
         <a href="/profile">Profile</a>
-        <a href="fuel_quote.html">Fuel Quote Form</a>
-        <a href="history.html">Quote History</a>
+        <a href="/fuel_quote">Fuel Quote Form</a>
+        <a href="/history">Quote History</a>
           <!--<ul class="nav navbar-nav navbar-right">
         <li><a href="index.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>-->
-      </ul>
+      <!-- </ul> -->
       </div>
        
 <h1>Hi <%= name %></h1>
@@ -28,8 +28,8 @@
         <div id="main">
             <div class="button">
                 <a href="/profile" class="btn">View / Edit Profile</a>
-                <a href="fuel_quote.html" class="btn">Request a Quote</a>
-                <a href="history.html" class="btn">View Quote History</a>
+                <a href="/fuel_quote" class="btn">Request a Quote</a>
+                <a href="/history" class="btn">View Quote History</a>
                 <br><br><br><br><br><center>
                 <form action = "/logout?_method=DELETE" method="POST">
                     <button type="submit" class="btn btn-large">Log Out</button>
