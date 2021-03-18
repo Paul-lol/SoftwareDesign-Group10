@@ -28,9 +28,8 @@ let userInfo = {
     city: 'Houston', 
     zip: '77082'
 };
-app.use(express.static('public'));
 
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.static('public'));
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded( { extended: false}))
 app.use(flash())
