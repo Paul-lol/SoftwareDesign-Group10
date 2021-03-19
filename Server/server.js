@@ -24,7 +24,8 @@ const users = []
 let userInfo = {
     full_name: 'Raj Singh', 
     street1: '22400 Grand Cir Blvd Suite 206, Katy, TX 77449', 
-    street2: 'N/A', 
+    street2: 'N/A',
+    state: 'TX',
     city: 'Houston', 
     zip: '77082'
 };
@@ -65,6 +66,7 @@ app.get('/profile', checkAuthenticated, (req,res) => {
     res.render('profile.ejs', {full_name: userInfo.full_name, 
     street1: userInfo.street1, 
     street2: userInfo.street2,
+    state: userInfo.state,
     city: userInfo.city,
     zip: userInfo.zip});
 })
@@ -90,7 +92,8 @@ app.get('/editProfile', checkAuthenticated, (req, res) => {
 
 app.post('/editProfile', checkAuthenticated, (req,res) => {
     userInfo = req.body;
-    console.log(userInfo);
+    //console.log(userInfo);
+    console.log(req.body);
     res.redirect('/profile');
 })
 
@@ -148,7 +151,7 @@ app.post('/fuel_quote', checkAuthenticated, (req,res) => {
         req.body.price_per_gallon, 
         req.body.total_due);
     hist.push(fuel);
-    console.log(fuel);
+    //console.log(fuel);
     res.redirect('/history');
 })
 
