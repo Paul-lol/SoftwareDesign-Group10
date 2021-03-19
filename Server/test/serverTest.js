@@ -2,21 +2,188 @@ const assert = require('chai').assert;
 // const checkHist = require('../server').checkHist;
 // const checkUsername = require('../server').checkUsername;
 // const checkPassword = require('../server').checkPassword;
+const chai = require('chai')
+const chaiHttp = require('chai-http')
 const app = require('../server');
+chai.should();
+chai.use(chaiHttp);
 
 checkHistResult = app.checkHist();
-checkHist0Result = app.checkHist0();
-checkHist1Result = app.checkHist1();
-checkHist2Result = app.checkHist2();
+checkHist0Result = app.checkHist()[0];
+checkHist1Result = app.checkHist()[1];
+checkHist2Result = app.checkHist()[2];
 
-checkNameResult = app.checkName();
-checkStreet1Result = app.checkStreet1();
-checkStreet2Result = app.checkStreet2();
-checkStateResult = app.checkState();
-checkCityResult = app.checkCity();
-checkZipResult = app.checkZip();
+checkNameResult = app.user().full_name;
+checkStreet1Result = app.user().street1;
+checkStreet2Result = app.user().street2;
+checkStateResult = app.user().state;
+checkCityResult = app.user().city;
+checkZipResult = app.user().zip;
+server = app.server;
 
 describe('Server',function(){
+    describe("GET /profile", () => {
+        it("It should render the profile page with an OK status", (done) => {
+            chai.request(server)
+                .get("/profile")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+
+        it("It should NOT render the profile page with an OK status", (done) => {
+            chai.request(server)
+                .get("/notprofile")
+                .end((err, response) => {
+                    response.should.have.status(404);
+                done();
+                })
+        })
+    })
+
+    describe("POST /editProfile", () => {
+        it("It POST the user credentials to the server", (done) => {
+            const user = {
+                full_name: 'Darwin Morales', 
+                street1: '15241 Grand Coast Dr', 
+                street2: 'N/A',
+                state: 'TX',
+                city: 'Katy', 
+                zip: '77077'
+            }
+            chai.request(server)
+                .post("/editProfile")
+                .send(user)
+                .end((err, response) => {
+                    response.should.have.status(200);
+                    response.body.should.be.a('object');
+                done();
+                })
+        })
+    })
+
+    describe("GET /fuel_quote", () => {
+        it("It should render the fuel_quote page with an OK status", (done) => {
+            chai.request(server)
+                .get("/fuel_quote")
+                .end((err, response) => {
+                    response.body.should.be.a('object');
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
+    describe("POST /fuel_quote", () => {
+        it("It should POST the fuel quote values to the server OK status", (done) => {
+            chai.request(server)
+                .post("/fuel_quote")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                    response.should.be.a('object');
+                done();
+                })
+        })
+    })
+    
+    describe("GET /", () => {
+        it("Should get the home page with 200 status", (done) => {
+            chai.request(server)
+                .get("/")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
+    describe("GET /login", () => {
+        it("Should get the login page with 200 status", (done) => {
+            chai.request(server)
+                .get("/login")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
+    describe("GET /register", () => {
+        it("Should get the login page with 200 status", (done) => {
+            chai.request(server)
+                .get("/register")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
+    describe("GET /history", () => {
+        it("Should get the login page with 200 status", (done) => {
+            chai.request(server)
+                .get("/history")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
+    describe("GET /api/history", () => {
+        it("Should get the login page with 200 status", (done) => {
+            chai.request(server)
+                .get("/api/history")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+    
+    describe("POST /register", () => {
+        it("Should Post registeration info with 200 status", (done) => {
+            chai.request(server)
+                .post("/register")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
+    describe("POST /login", () => {
+        it("Should process the login credentials with 200 status", (done) => {
+            chai.request(server)
+                .post("/login")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
+    describe("/logout to delete ", () => {
+        it("Should get the login page with 200 status", (done) => {
+            chai.request(server)
+                .delete("/logout")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
+    it('should return an object', () => {
+        let obj = new app.fuel_quote();
+        assert.ok(obj);
+    })
+
+    it('should return an object', () => {
+        assert.ok(app.checkAuth);
+    })
+
     it('checkHist should return type array', function(){
         assert.typeOf(checkHistResult, 'array');
     })
@@ -238,13 +405,4 @@ describe('Server',function(){
         assert.lengthOf(checkZipResult, 5);
     })
 
-    
-    // let userInfo = {
-    //     full_name: 'Raj Singh', 
-    //     street1: '22400 Grand Cir Blvd Suite 206', 
-    //     street2: 'N/A',
-    //     state: 'TX',
-    //     city: 'Katy', 
-    //     zip: '77082'
-    // };
 });

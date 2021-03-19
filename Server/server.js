@@ -2,6 +2,7 @@ if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config()
 }
 
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -134,7 +135,7 @@ app.get('/history', checkAuthenticated, (req, res) => {
     res.render('history.ejs', {hist: hist});
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {
-    console.log(userInfo.street1)
+    //console.log(userInfo.street1)
     //address = `${user.street1},${user.city},${user.state},${user.zip}`;
     res.render('fuel_quote.ejs', {user:userInfo});
 })
@@ -154,7 +155,6 @@ app.post('/fuel_quote', checkAuthenticated, (req,res) => {
         req.body.price_per_gallon, 
         req.body.total_due);
     hist.push(fuel);
-    //console.log(fuel);
     res.redirect('/history');
 })
 
@@ -173,18 +173,14 @@ function checknotAuthenticated(req, res, next){
     }
     next()
 }
+
+const PORT = process.env.PORT || 3000;
 module.exports = {
+    checkAuth: function(){
+        return checkAuthenticated;
+    },
     checkHist: function(){
         return hist;
-    },
-    checkHist0: function(){
-        return hist[0];
-    },
-    checkHist1: function(){
-        return hist[1];
-    },
-    checkHist2: function(){
-        return hist[2];
     },
     checkUsername: function(){
         return users.inputUsername;
@@ -192,27 +188,11 @@ module.exports = {
     checkPassword: function(){
         return users.inputPassword;
     },
-    checkName: function(){
-        return userInfo.full_name;
+    user: function() {
+        return userInfo;
     },
-    checkStreet1: function(){
-        return userInfo.street1;
+    fuel_quote: function() {
+        return Fuel_quote;
     },
-    checkStreet2: function(){
-        return userInfo.street2;
-    },
-    checkState: function(){
-        return userInfo.state;
-    },
-    checkCity: function(){
-        return userInfo.city;
-    },
-    checkZip: function(){
-        return userInfo.zip;
-    }
-
+    server: app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 }
-
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
