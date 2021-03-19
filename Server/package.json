@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon server.js"
+    "devStart": "nodemon server.js",
+    "test": "mocha || true"
   },
   "author": "",
   "license": "ISC",
@@ -20,7 +21,10 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "chai": "^4.3.4",
     "dotenv": "^8.2.0",
-    "nodemon": "^2.0.7"
+    "mocha": "^8.3.2",
+    "nodemon": "^2.0.7",
+    "standard": "^16.0.3"
   }
 }

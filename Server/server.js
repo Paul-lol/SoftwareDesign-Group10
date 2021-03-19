@@ -28,8 +28,9 @@ let userInfo = {
     city: 'Houston', 
     zip: '77082'
 };
-
 app.use(express.static('public'));
+
+app.use(bodyParser.urlencoded({extended:true}));
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded( { extended: false}))
 app.use(flash())
@@ -99,27 +100,26 @@ app.delete('/logout', (req, res) => {
     res.redirect('/login')
 })
 
-
 // hardcoded value for history
 const hist = [
     {
         gallons: 101,
         d_address: '4800 Calhoun Rd, Houston, TX 77204-2610',
-        d_date: '02/14/2021',
+        d_date: '2021-02-14',
         price_per: 2.19,
         total: 221.19
     },
     {
         gallons: 135,
         d_address: '6060 N Fry Rd, Katy, TX 77449',
-        d_date: '02/13/2021',
+        d_date: '2021-02-13',
         price_per: 2.35,
         total: 317.25
     },
     {
         gallons: 276,
         d_address: '1234 Dummy Values, Houston, TX 77123',
-        d_date: '01/29/2021',
+        d_date: '2021-01-29',
         price_per: 2.40,
         total: 662.40
     }
@@ -139,12 +139,13 @@ function Fuel_quote(gallons, d_address, d_date, price_per, total) {
     this.d_address = d_address;
     this.d_date = d_date;
     this.price_per = price_per;
-    this.total = total;
+    this.total = gallons * price_per;
 }
+
 app.post('/fuel_quote', checkAuthenticated, (req,res) => {
-    let fuel = new Fuel_quote(req.body.gallons_requested, 
-        req.body.delivery_address, 
-        req.body.delivery_date, 
+    let fuel = new Fuel_quote(req.body.gallons_requested,
+        req.body.delivery_address,
+        req.body.delivery_date,
         req.body.price_per_gallon, 
         req.body.total_due);
     hist.push(fuel);
@@ -157,6 +158,7 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()){
         return next()
     }
+
     res.redirect('/login')
 }
 
@@ -165,6 +167,10 @@ function checknotAuthenticated(req, res, next){
         return res.redirect('/')
     }
     next()
+}
+
+module.exports = {
+
 }
 
 
