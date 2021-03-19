@@ -5,11 +5,7 @@
   "main": "index.js",
   "scripts": {
     "devStart": "nodemon server.js",
-<<<<<<< HEAD
-    "test" : "mocha"
-=======
     "test": "mocha || true"
->>>>>>> b7d05f4f07c3c9b15b0fa2c4138c21e3e69e2c7c
   },
   "author": "",
   "license": "ISC",
@@ -28,11 +24,7 @@
     "chai": "^4.3.4",
     "dotenv": "^8.2.0",
     "mocha": "^8.3.2",
-<<<<<<< HEAD
-    "nodemon": "^2.0.7"
-=======
     "nodemon": "^2.0.7",
     "standard": "^16.0.3"
->>>>>>> b7d05f4f07c3c9b15b0fa2c4138c21e3e69e2c7c
   }
 }
