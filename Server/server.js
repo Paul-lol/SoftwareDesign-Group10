@@ -135,7 +135,8 @@ app.get('/history', checkAuthenticated, (req, res) => {
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {
     console.log(userInfo.street1)
-    res.render('fuel_quote.ejs', {street1: userInfo.street1});
+    //address = `${user.street1},${user.city},${user.state},${user.zip}`;
+    res.render('fuel_quote.ejs', {user:userInfo});
 })
 
 function Fuel_quote(gallons, d_address, d_date, price_per, total) { 
