@@ -23,10 +23,10 @@ initializePassport(
 const users = []
 let userInfo = {
     full_name: 'Raj Singh', 
-    street1: '22400 Grand Cir Blvd Suite 206, Katy, TX 77449', 
+    street1: '22400 Grand Cir Blvd Suite 206', 
     street2: 'N/A',
     state: 'TX',
-    city: 'Houston', 
+    city: 'Katy', 
     zip: '77082'
 };
 app.use(express.static('public'));
@@ -134,7 +134,8 @@ app.get('/history', checkAuthenticated, (req, res) => {
     res.render('history.ejs', {hist: hist});
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {
-    res.render('fuel_quote.ejs', {address1: userInfo.street1});
+    console.log(userInfo.street1)
+    res.render('fuel_quote.ejs', {street1: userInfo.street1});
 })
 
 function Fuel_quote(gallons, d_address, d_date, price_per, total) { 
