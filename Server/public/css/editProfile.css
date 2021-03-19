@@ -1,7 +1,6 @@
 /* Remove the navbar's default margin-bottom and rounded borders */
 
 * {
-  font-size: x-small;
   font-family: Helvetica, sans-serif;
 }
 .navbar {
@@ -95,4 +94,8 @@ footer {
 .topnav a.active {
   background-color: #4caf50;
   color: white;
+}
+
+.logout button {
+  float: right
 }

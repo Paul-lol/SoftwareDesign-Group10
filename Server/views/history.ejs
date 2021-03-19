@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Fuel Quote History</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-        <title>Fuel Quote History</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="css/history.css">
     </head>
 
@@ -17,45 +17,44 @@
             <a href="/profile">Profile</a>
             <a href="/fuel_quote">Fuel Quote Form</a>
             <a class="active" href="/history">Quote History</a>
-             <!-- <ul class="nav navbar-nav navbar-right">
-                <li><a href="index.html"><span class="glyphicon glyphicon-log-out"></span> Logout
-                    </a></li> -->
-            <!-- </ul> -->
+            <div class="logout">
+                <form action = "/logout?_method=DELETE" method="POST">
+                 <button type="submit" class="btn btn-large"><span class="glyphicon glyphicon-log-out"></span> Log Out</button>
+             </form>
+             </div>
           </div>
         
-    <br>
     <br>
 
     <div id="container">
     <center>
         <h1>Your Fuel Quote History</h1>
     </center>
+    <br>
     <div id="main">
     <table class="table mt-5 text-center" id="history">
         <thead>
           <tr>
-            <th>Gallons Requested</th>
-            <th>Delivery Address</th>
-            <th>Delivery Date</th>
-            <th>Price per Gallon</th>
-            <th>Total Amount Due</th>
+            <th><center>Gallons Requested</center></th>
+            <th><center>Delivery Address</center></th>
+            <th><center>Delivery Date</center></th>
+            <th><center>Price per Gallon</center></th>
+            <th><center>Total Amount Due</center></th>
           </tr>
         </thead>
         <!-- Dummy Values just for front end -->
         <% for(let i = 0; i < hist.length; i++) {%>
             <tr> 
                 <td><%= hist[i].gallons %></td>
-                <td><%= hist[i].d_date %></td>
-                <td><%= hist[i].d_address%></td>
+                <td><%= hist[i].d_address %></td>
+                <td><%= hist[i].d_date%></td>
                 <td><%= hist[i].price_per%></td>
                 <td><%= hist[i].total%></td>
             </tr>
             <% } %>
         
-        <!-- Dynamic Table implemented in Javascript -->
-        <tbody id="dynamic-table-fuel">
-        </tbody>
       </table>
+
     </div>
     </div>
 </body>
