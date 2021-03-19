@@ -173,8 +173,43 @@ function checknotAuthenticated(req, res, next){
     }
     next()
 }
-
 module.exports = {
+    checkHist: function(){
+        return hist;
+    },
+    checkHist0: function(){
+        return hist[0];
+    },
+    checkHist1: function(){
+        return hist[1];
+    },
+    checkHist2: function(){
+        return hist[2];
+    },
+    checkUsername: function(){
+        return users.inputUsername;
+    },
+    checkPassword: function(){
+        return users.inputPassword;
+    },
+    checkName: function(){
+        return userInfo.full_name;
+    },
+    checkStreet1: function(){
+        return userInfo.street1;
+    },
+    checkStreet2: function(){
+        return userInfo.street2;
+    },
+    checkState: function(){
+        return userInfo.state;
+    },
+    checkCity: function(){
+        return userInfo.city;
+    },
+    checkZip: function(){
+        return userInfo.zip;
+    }
 
 }
 

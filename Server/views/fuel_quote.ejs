@@ -36,8 +36,12 @@
 <div class="form-group">
             <!-- Delivery Address (non-editable, comes from client profile) -->
             <label for="delivery_address_id" class="control-label">Delivery Address</label>
-            <h5> <%= `${user.street1}, ${user.city}, ${user.state}, ${user.zip}` %></h5>
+            <input type="text" value = "<%= street1 + ' ' + street2 + ' ' + city + ' ' + state + ' ' + zip %>" class="form-control" 
+                name="delivery_address" style = "width:100%;" readonly/>
+            
         </div>
+
+        
 
         <!-- Delivery Date (calendar, date picker) -->
         <div class="form-group">
