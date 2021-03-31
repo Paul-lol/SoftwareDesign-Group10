@@ -2,7 +2,7 @@ if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config()
 }
 
-
+const mongoose = require('mongoose')
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -12,6 +12,19 @@ const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const path = require("path")
+
+//I create a new database called dojDB and connect it to the node app.
+mongoose.connect("mongodb://localhost:27017/dojDB", {useNewUrlParser: true, useUnifiedTopology: true});
+const userSchema = new mongoose.Schema({ 
+    full_name: String, 
+    street1: String,
+    street2: String,
+    city: String, 
+    zip: Number,
+    state: String
+});
+
+const User = mongoose.model("User", userSchema);
 
 const initializePassport = require('./passport-config')
 const { join } = require('path')
@@ -23,12 +36,12 @@ initializePassport(
 
 const users = []
 let userInfo = {
-    full_name: 'Raj Singh', 
-    street1: '22400 Grand Cir Blvd Suite 206', 
+    full_name: '', 
+    street1: '', 
     street2: 'N/A',
-    state: 'TX',
-    city: 'Katy', 
-    zip: '77082'
+    state: '',
+    city: '', 
+    zip: ''
 };
 app.use(express.static('public'));
 
@@ -94,6 +107,16 @@ app.get('/editProfile', checkAuthenticated, (req, res) => {
 
 app.post('/editProfile', checkAuthenticated, (req,res) => {
     userInfo = req.body;
+    const user = new User ({
+        full_name: userInfo.full_name, 
+        street1 : userInfo.street1, 
+        street2 : userInfo.street2, 
+        state: userInfo.state,
+        city: userInfo.city, 
+        zip: userInfo.zip
+    })
+    user.save();
+
     //console.log(userInfo);
     console.log(req.body);
     res.redirect('/profile');

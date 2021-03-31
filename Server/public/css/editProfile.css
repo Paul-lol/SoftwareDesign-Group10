@@ -97,5 +97,10 @@ footer {
 }
 
 .logout button {
-  float: right
+  float: right;
+}
+
+#buttons {
+  display: flex;
+  justify-content: space-between;
 }

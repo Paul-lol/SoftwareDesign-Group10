@@ -42,6 +42,17 @@ describe('Server',function(){
         })
     })
 
+    describe("GET /editProfile", () => {
+        it("It should render the fuel_quote page with an OK status", (done) => {
+            chai.request(server)
+                .get("/editProfile")
+                .end((err, response) => {
+                    response.body.should.be.a('object');
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
     describe("POST /editProfile", () => {
         it("It POST the user credentials to the server", (done) => {
             const user = {
