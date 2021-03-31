@@ -36,7 +36,7 @@ footer {
   font-family: montserrat;
   position: fixed;
   width: 100%;
-  left: 0;
+  /*left: 0;*/
   bottom: 0;
 }
 

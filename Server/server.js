@@ -14,7 +14,12 @@ const methodOverride = require('method-override')
 const path = require("path")
 
 //I create a new database called dojDB and connect it to the node app.
-mongoose.connect("mongodb://localhost:27017/dojDB", {useNewUrlParser: true, useUnifiedTopology: true});
+const uri = "mongodb+srv://dbUser:group10SD@sdproject.ebxx7.mongodb.net/database1?retryWrites=true&w=majority"
+mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+const db = mongoose.connection
+db.on('error', (error) => console.error(error))
+db.once('open', () => console.log('Connected to Database'))
+
 const userSchema = new mongoose.Schema({ 
     full_name: String, 
     street1: String,
@@ -118,7 +123,7 @@ app.post('/editProfile', checkAuthenticated, (req,res) => {
     user.save();
 
     //console.log(userInfo);
-    console.log(req.body);
+    //console.log(req.body);
     res.redirect('/profile');
 })
 
@@ -182,6 +187,7 @@ app.post('/fuel_quote', checkAuthenticated, (req,res) => {
 })
 
 
+
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()){
         return next()
@@ -219,3 +225,12 @@ module.exports = {
     },
     server: app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 }
+
+User.find((err,user)=>{
+    if(err){
+        console.log(err);
+    }
+    else {
+        console.log(user);
+    }
+});
