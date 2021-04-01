@@ -38,7 +38,8 @@ const fuelQuoteSchema = new mongoose.Schema({
     delivery_address: { type: String, required: true},
     delivery_date: { type: Date, required: true },
     price_per: { type: Number, required: true },
-    total: { type: Number, required: true }
+    total: { type: Number, required: true },
+    username: { type: String, required: true }
 });
 
 const User = mongoose.model("User", userSchema);
@@ -172,13 +173,13 @@ app.delete('/logout', (req, res) => {
     res.redirect('/login')
 })
 
-// hardcoded value for history
 const hist = []
 // Gets fuel quote history
 app.get('/api/history', (req, res) => res.json(hist));
 
 app.get('/history', checkAuthenticated, async (req, res) => {
-    await FuelQuote.find({}).then((quotes) =>{
+    const filter = { username: req.user.username }
+    await FuelQuote.find(filter).then((quotes) =>{
         var i = 0;
         for (i = 0; i < quotes.length; i++){
             hist.push({
@@ -207,6 +208,7 @@ function Fuel_quote(gallons, d_address, d_date, price_per) {
 }
 
 app.post('/fuel_quote', checkAuthenticated, async (req,res) => {
+    console.log(req.user.username);
     let fuel = new Fuel_quote(req.body.gallons_requested,
         req.body.delivery_address,
         req.body.delivery_date,
@@ -217,7 +219,8 @@ app.post('/fuel_quote', checkAuthenticated, async (req,res) => {
         delivery_address: fuel.d_address,
         delivery_date: fuel.d_date,
         price_per: fuel.price_per,
-        total: fuel.total
+        total: fuel.total,
+        username: req.user.username
     })
     await fuelQuote.save();
     console.log()
