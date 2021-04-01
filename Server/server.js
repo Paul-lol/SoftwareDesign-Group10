@@ -13,7 +13,6 @@ const session = require('express-session')
 const methodOverride = require('method-override')
 const path = require("path")
 
-//I create a new database called dojDB and connect it to the node app.
 const uri = "mongodb+srv://dbUser:group10SD@sdproject.ebxx7.mongodb.net/database1?retryWrites=true&w=majority"
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 
