@@ -30,7 +30,7 @@
     <!-- Gallons Requested (numeric, required) -->
 <label for="gallons_quantity" class="control-label">Gallons Requested</label>
             <input type=number class="form-control" id="gallons_requested_id"
-                name="gallons_requested" min ="0" step=any placeholder="100.00" required=true />
+                name="gallons_requested" min ="0" step=any placeholder="100.00" required=true onkeyup="calculateTotal()"/>
 <br>
 
 <div class="form-group">
@@ -59,7 +59,7 @@
         <div class="form-group">
             <label for="total_id" class="control-label">Amount Due</label>
             <input type="text" class="form-control"
-                id="total_id" name="total_due" value="calculated: gallons * price" readonly/>
+                id="total_id" name="total_due" value="$0.0" readonly/>
         </div>
 
     <div class="form-group">
@@ -74,12 +74,11 @@
 </footer>
 
 </body>
-<!-- <script>
-    function calculateAmount(){
-        let 
+<script>
+    function calculateTotal() {
+      var x = document.getElementById("gallons_requested_id").value;
+      var y = document.getElementById("price_id").value;
+      document.getElementById("total_id").value = "$" + x * y;
     }
-    $(function(){
-        $(".")
-    }
-</script> -->
+</script>
 </html>
