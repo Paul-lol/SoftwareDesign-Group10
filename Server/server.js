@@ -31,7 +31,8 @@ const userSchema = new mongoose.Schema({
 });
 const userInfoSchema = new mongoose.Schema({
     username: { type: String, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    new_user: { type: Boolean, default: true}
 });
 const fuelQuoteSchema = new mongoose.Schema({
     gallons: { type: Number, required: true },
@@ -55,7 +56,6 @@ initializePassport(
     id => users.find(user => user.id === id)
 )
 
-const users = []
 let userInfo = {
     full_name: '', 
     street1: '', 
@@ -81,6 +81,7 @@ app.use(passport.session())
 app.use(methodOverride('_method'))
 
 app.get('/', checkAuthenticated, (req, res) => {
+    
     res.render('index.ejs', { name: req.user.inputUsername})
 })
 
@@ -107,6 +108,7 @@ app.get('/profile', checkAuthenticated, (req,res) => {
     zip: userInfo.zip});
 })
 
+const users = []
 app.post('/register', checknotAuthenticated, async (req, res) => {
     try{
       const hashedPassword = await bcrypt.hash(req.body.inputPassword, 10 )
@@ -115,14 +117,22 @@ app.post('/register', checknotAuthenticated, async (req, res) => {
           inputUsername: req.body.inputUsername,
           inputPassword: hashedPassword
       })
-      const userInfo = new UserInfo ({
-          username: req.body.inputUsername,
-          password: hashedPassword
-
-      })
-      await userInfo.save();
-      console.log(req.body);
-      res.redirect('/login')
+    UserInfo.find({ username: req.body.inputUsername }).then((users) =>{
+        if (users.length > 0){
+            console.log(users.length);
+            //users.splice(0, users.length);
+            res.redirect('/register')
+        } else{
+            const userInfo = new UserInfo ({
+                username: req.body.inputUsername,
+                password: hashedPassword,
+                new_user: true
+            })
+            userInfo.save();
+            console.log(userInfo);
+            res.redirect('/login')
+        }
+    })
     } catch{
       res.redirect('/register')
     }
