@@ -80,9 +80,20 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
 
-app.get('/', checkAuthenticated, (req, res) => {
-    
-    res.render('index.ejs', { name: req.user.inputUsername})
+app.get('/', checkAuthenticated, async (req, res) => {
+    // console.log(req.user.inputUsername);
+    await UserInfo.find({ username: req.user.inputUsername }).then(async (users) =>{
+        // console.log(users[0].new_user);
+        if (users[0].new_user){
+            const filter = { username: req.user.inputUsername }
+            const update = { new_user: false }
+            await UserInfo.findOneAndUpdate(filter, update)
+            //console.log(doc.new_user);
+            res.redirect('/editProfile')
+        } else{
+            res.render('index.ejs', { name: req.user.inputUsername})
+        }
+    })
 })
 
 app.get('/login', checknotAuthenticated, (req, res) => {
@@ -117,9 +128,9 @@ app.post('/register', checknotAuthenticated, async (req, res) => {
           inputUsername: req.body.inputUsername,
           inputPassword: hashedPassword
       })
-    UserInfo.find({ username: req.body.inputUsername }).then((users) =>{
+    await UserInfo.find({ username: req.body.inputUsername }).then((users) =>{
         if (users.length > 0){
-            console.log(users.length);
+            // console.log(users.length);
             //users.splice(0, users.length);
             res.redirect('/register')
         } else{
@@ -143,7 +154,7 @@ app.get('/editProfile', checkAuthenticated, (req, res) => {
     res.render('editProfile.ejs');
 })
 
-app.post('/editProfile', checkAuthenticated, (req,res) => {
+app.post('/editProfile', checkAuthenticated, async (req,res) => {
     userInfo = req.body;
     const user = new User ({
         full_name: userInfo.full_name, 
@@ -153,7 +164,7 @@ app.post('/editProfile', checkAuthenticated, (req,res) => {
         city: userInfo.city, 
         zip: userInfo.zip
     })
-    user.save();
+    await user.save();
 
     console.log(req.body);
     res.redirect('/profile');
@@ -169,16 +180,24 @@ const hist = []
 // Gets fuel quote history
 app.get('/api/history', (req, res) => res.json(hist));
 
-app.get('/history', checkAuthenticated, (req, res) => {
-    FuelQuote.find({}).then((quotes) =>{
+app.get('/history', checkAuthenticated, async (req, res) => {
+    await FuelQuote.find({}).then((quotes) =>{
         var i = 0;
         for (i = 0; i < quotes.length; i++){
-            hist.push(quotes[i]);
+            hist.push({
+                gallons: quotes[i].gallons,
+                d_address: quotes[i].delivery_address,
+                d_date: quotes[i].delivery_date,
+                price_per: quotes[i].price_per,
+                total: quotes[i].total
+            });
         }
         console.log(hist);
     })
 
+
     res.render('history.ejs', {hist: hist});
+    hist.splice(0, hist.length);
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {res.render('fuel_quote.ejs', {user:userInfo});})
 //console.log(userInfo.street1)
@@ -192,13 +211,12 @@ function Fuel_quote(gallons, d_address, d_date, price_per) {
     this.total = gallons * price_per;
 }
 
-app.post('/fuel_quote', checkAuthenticated, (req,res) => {
+app.post('/fuel_quote', checkAuthenticated, async (req,res) => {
     let fuel = new Fuel_quote(req.body.gallons_requested,
         req.body.delivery_address,
         req.body.delivery_date,
         req.body.price_per_gallon, 
         req.body.total_due);
-    hist.push(fuel);
     const fuelQuote = new FuelQuote({
         gallons: fuel.gallons,
         delivery_address: fuel.d_address,
@@ -206,7 +224,7 @@ app.post('/fuel_quote', checkAuthenticated, (req,res) => {
         price_per: fuel.price_per,
         total: fuel.total
     })
-    fuelQuote.save();
+    await fuelQuote.save();
     console.log()
     res.redirect('/history');
 })
@@ -245,11 +263,11 @@ module.exports = {
     server: app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 }
 
-User.find((err,user)=>{
-    if(err){
-        console.log(err);
-    }
-    else {
-        console.log(user);
-    }
-});
+// User.find((err,user)=>{
+//     if(err){
+//         console.log(err);
+//     }
+//     else {
+//         console.log(user);
+//     }
+// });
