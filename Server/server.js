@@ -15,19 +15,19 @@ const path = require("path")
 
 //I create a new database called dojDB and connect it to the node app.
 const uri = "mongodb+srv://dbUser:group10SD@sdproject.ebxx7.mongodb.net/database1?retryWrites=true&w=majority"
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected to Database'))
 
 const userSchema = new mongoose.Schema({ 
-    full_name: String, 
-    street1: String,
+    full_name: { type: String, required: true }, 
+    street1: { type: String, required: true },
     street2: String,
-    city: String, 
-    zip: Number,
-    state: String
+    city: { type: String, required: true }, 
+    zip: { type: Number, required: true },
+    state: { type: String, required: true }
 });
 const userInfoSchema = new mongoose.Schema({
     username: { type: String, required: true },
@@ -43,16 +43,17 @@ const fuelQuoteSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
-const UserInfo = mongoose.model("UserInfo", userInfoSchema);
 const FuelQuote = mongoose.model("FuelQuote", fuelQuoteSchema);
 
-
-const initializePassport = require('./passport-config')
+const UserInfo = require('./models/UserInfo')
+const initializePassport = require('./passport-config') 
 const { join } = require('path')
 const { truncateSync } = require('fs')
+
+const dbUsers = [];
 initializePassport(
     passport, 
-    inputUsername => users.find(user => user.inputUsername === inputUsername),
+    inputUsername => dbUsers.find(user => user.inputUsername === inputUsername),
     id => users.find(user => user.id === id)
 )
 
@@ -81,19 +82,16 @@ app.use(passport.session())
 app.use(methodOverride('_method'))
 
 app.get('/', checkAuthenticated, async (req, res) => {
-    // console.log(req.user.inputUsername);
-    await UserInfo.find({ username: req.user.inputUsername }).then(async (users) =>{
-        // console.log(users[0].new_user);
-        if (users[0].new_user){
-            const filter = { username: req.user.inputUsername }
-            const update = { new_user: false }
-            await UserInfo.findOneAndUpdate(filter, update)
-            //console.log(doc.new_user);
-            res.redirect('/editProfile')
-        } else{
-            res.render('index.ejs', { name: req.user.inputUsername})
-        }
-    })
+    console.log(req.user);
+    if(req.user.new_user){
+        const filter = { username: req.user.username }
+        const update = { new_user: false }
+        await UserInfo.findOneAndUpdate(filter, update)
+        res.redirect('/editProfile')
+    }
+    else{
+        res.render('index.ejs', {name: req.user.username});
+    }
 })
 
 app.get('/login', checknotAuthenticated, (req, res) => {
@@ -132,7 +130,7 @@ app.post('/register', checknotAuthenticated, async (req, res) => {
         if (users.length > 0){
             // console.log(users.length);
             //users.splice(0, users.length);
-            res.redirect('/register')
+            res.redirect('/register');
         } else{
             const userInfo = new UserInfo ({
                 username: req.body.inputUsername,
@@ -200,8 +198,6 @@ app.get('/history', checkAuthenticated, async (req, res) => {
     hist.splice(0, hist.length);
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {res.render('fuel_quote.ejs', {user:userInfo});})
-//console.log(userInfo.street1)
-    //address = `${user.street1},${user.city},${user.state},${user.zip}`;
 
 function Fuel_quote(gallons, d_address, d_date, price_per) { 
     this.gallons = gallons; 
