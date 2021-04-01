@@ -15,7 +15,8 @@ const path = require("path")
 
 //I create a new database called dojDB and connect it to the node app.
 const uri = "mongodb+srv://dbUser:group10SD@sdproject.ebxx7.mongodb.net/database1?retryWrites=true&w=majority"
-mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected to Database'))
@@ -28,11 +29,26 @@ const userSchema = new mongoose.Schema({
     zip: Number,
     state: String
 });
+const userInfoSchema = new mongoose.Schema({
+    username: { type: String, required: true },
+    password: { type: String, required: true }
+});
+const fuelQuoteSchema = new mongoose.Schema({
+    gallons: { type: Number, required: true },
+    delivery_address: { type: String, required: true},
+    delivery_date: { type: Date, required: true },
+    price_per: { type: Number, required: true },
+    total: { type: Number, required: true }
+});
 
 const User = mongoose.model("User", userSchema);
+const UserInfo = mongoose.model("UserInfo", userInfoSchema);
+const FuelQuote = mongoose.model("FuelQuote", fuelQuoteSchema);
+
 
 const initializePassport = require('./passport-config')
 const { join } = require('path')
+const { truncateSync } = require('fs')
 initializePassport(
     passport, 
     inputUsername => users.find(user => user.inputUsername === inputUsername),
@@ -49,7 +65,7 @@ let userInfo = {
     zip: ''
 };
 app.use(express.static('public'));
-
+app.use(express.json())
 app.use(bodyParser.urlencoded({extended:true}));
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded( { extended: false}))
@@ -99,6 +115,13 @@ app.post('/register', checknotAuthenticated, async (req, res) => {
           inputUsername: req.body.inputUsername,
           inputPassword: hashedPassword
       })
+      const userInfo = new UserInfo ({
+          username: req.body.inputUsername,
+          password: hashedPassword
+
+      })
+      await userInfo.save();
+      console.log(req.body);
       res.redirect('/login')
     } catch{
       res.redirect('/register')
@@ -122,8 +145,7 @@ app.post('/editProfile', checkAuthenticated, (req,res) => {
     })
     user.save();
 
-    //console.log(userInfo);
-    //console.log(req.body);
+    console.log(req.body);
     res.redirect('/profile');
 })
 
@@ -133,42 +155,26 @@ app.delete('/logout', (req, res) => {
 })
 
 // hardcoded value for history
-const hist = [
-    {
-        gallons: 101,
-        d_address: '4800 Calhoun Rd, Houston, TX 77204-2610',
-        d_date: '2021-02-14',
-        price_per: 2.19,
-        total: 221.19
-    },
-    {
-        gallons: 135,
-        d_address: '6060 N Fry Rd, Katy, TX 77449',
-        d_date: '2021-02-13',
-        price_per: 2.35,
-        total: 317.25
-    },
-    {
-        gallons: 276,
-        d_address: '1234 Dummy Values, Houston, TX 77123',
-        d_date: '2021-01-29',
-        price_per: 2.40,
-        total: 662.40
-    }
-]
+const hist = []
 // Gets fuel quote history
 app.get('/api/history', (req, res) => res.json(hist));
 
 app.get('/history', checkAuthenticated, (req, res) => {
+    FuelQuote.find({}).then((quotes) =>{
+        var i = 0;
+        for (i = 0; i < quotes.length; i++){
+            hist.push(quotes[i]);
+        }
+        console.log(hist);
+    })
+
     res.render('history.ejs', {hist: hist});
 })
-app.get('/fuel_quote', checkAuthenticated, (req, res) => {
-    //console.log(userInfo.street1)
+app.get('/fuel_quote', checkAuthenticated, (req, res) => {res.render('fuel_quote.ejs', {user:userInfo});})
+//console.log(userInfo.street1)
     //address = `${user.street1},${user.city},${user.state},${user.zip}`;
-    res.render('fuel_quote.ejs', {user:userInfo});
-})
 
-function Fuel_quote(gallons, d_address, d_date, price_per, total) { 
+function Fuel_quote(gallons, d_address, d_date, price_per) { 
     this.gallons = gallons; 
     this.d_address = d_address;
     this.d_date = d_date;
@@ -183,23 +189,26 @@ app.post('/fuel_quote', checkAuthenticated, (req,res) => {
         req.body.price_per_gallon, 
         req.body.total_due);
     hist.push(fuel);
+    const fuelQuote = new FuelQuote({
+        gallons: fuel.gallons,
+        delivery_address: fuel.d_address,
+        delivery_date: fuel.d_date,
+        price_per: fuel.price_per,
+        total: fuel.total
+    })
+    fuelQuote.save();
+    console.log()
     res.redirect('/history');
 })
 
 
-
 function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()){
-        return next()
-    }
-
+    if (req.isAuthenticated()) { return next() }
     res.redirect('/login')
 }
 
 function checknotAuthenticated(req, res, next){
-    if (req.isAuthenticated()){
-        return res.redirect('/')
-    }
+    if (req.isAuthenticated()) { return res.redirect('/') }
     next()
 }
 
