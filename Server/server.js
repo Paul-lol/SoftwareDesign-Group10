@@ -27,7 +27,8 @@ const userSchema = new mongoose.Schema({
     street2: String,
     city: { type: String, required: true }, 
     zip: { type: Number, required: true },
-    state: { type: String, required: true }
+    state: { type: String, required: true },
+    username: { type: String, required: true }
 });
 const userInfoSchema = new mongoose.Schema({
     username: { type: String, required: true },
@@ -84,13 +85,25 @@ app.use(methodOverride('_method'))
 
 app.get('/', checkAuthenticated, async (req, res) => {
     console.log(req.user);
+    const filter = { username: req.user.username }
     if(req.user.new_user){
-        const filter = { username: req.user.username }
         const update = { new_user: false }
         await UserInfo.findOneAndUpdate(filter, update)
         res.redirect('/editProfile')
     }
     else{
+        await User.find(filter).then(async (info) => {
+            console.log("info");
+            console.log(info);
+            userInfo = { 
+                full_name: info[0].full_name,
+                street1: info[0].street1,
+                street2: info[0].street2,
+                state: info[0].state,
+                city: info[0].city,
+                zip: info[0].zip
+            };
+        })
         res.render('index.ejs', {name: req.user.username});
     }
 })
@@ -154,18 +167,31 @@ app.get('/editProfile', checkAuthenticated, (req, res) => {
 })
 
 app.post('/editProfile', checkAuthenticated, async (req,res) => {
+    //console.log(req.body);
     userInfo = req.body;
-    const user = new User ({
+    const filter = { username: req.user.username };
+    const user = await User.updateOne(filter, {
         full_name: userInfo.full_name, 
         street1 : userInfo.street1, 
         street2 : userInfo.street2, 
         state: userInfo.state,
         city: userInfo.city, 
-        zip: userInfo.zip
+        zip: userInfo.zip,
+        username: req.user.username
+    }, { upsert: true });
+    await User.find(filter).then(async (info) => {
+        console.log("info");
+        console.log(info);
+        userInfo = { 
+            full_name: info[0].full_name,
+            street1: info[0].street1,
+            street2: info[0].street2,
+            state: info[0].state,
+            city: info[0].city,
+            zip: info[0].zip
+        };
     })
-    await user.save();
-
-    console.log(req.body);
+    //console.log(userInfo);
     res.redirect('/profile');
 })
 
