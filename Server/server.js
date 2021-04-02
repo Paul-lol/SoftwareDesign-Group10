@@ -287,12 +287,3 @@ module.exports = {
     },
     server: app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 }
-
-// User.find((err,user)=>{
-//     if(err){
-//         console.log(err);
-//     }
-//     else {
-//         console.log(user);
-//     }
-// });
