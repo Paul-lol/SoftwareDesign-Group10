@@ -30,7 +30,7 @@
     <!-- Gallons Requested (numeric, required) -->
 <label for="gallons_quantity" class="control-label">Gallons Requested</label>
             <input type=number class="form-control" id="gallons_requested_id"
-                name="gallons_requested" min ="0" step=any placeholder="100.00" required=true onkeyup="calculateTotal()"/>
+                name="gallons_requested" min ="0" step=any placeholder="100.00" required=true "/>
 <br>
 
 <div class="form-group">
@@ -48,7 +48,7 @@
         </div>
     
 
-        <!-- Suggested Price per Gallon (numeric non-editable, price will be calculated by pricing module - we are not building pricing module yet) -->
+        <!-- Suggested Price per Gallon (numeric non-editable, price will be calculated by pricing module -->
             <div class="form-group">
                 <label for="price_id" class="control-label">Suggested Price per Gallon</label>
                 <input type="text" class="form-control"
@@ -59,12 +59,15 @@
         <div class="form-group">
             <label for="total_id" class="control-label">Amount Due</label>
             <input type="text" class="form-control"
-                id="total_id" name="total_due" value="$0.0" readonly/>
+                id="total_id" name="total_due" readonly/>
         </div>
+    
+        <div class="form-group">
+            <!-- Get Quote Button -->
+            <button id ="getQuote" button type = "button" disabled = "disabled" class="btn btn-primary btn-lg" onClick="calculateTotal()">Get Quote</button>
 
-    <div class="form-group">
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary">Request</button>
+            <button id = "submitForm" button type = "submit" disabled = "disabled" class="btn btn-success btn-lg">Submit</button>
         </div>
         </div>
 
@@ -75,10 +78,22 @@
 
 </body>
 <script>
+    form.addEventListener('input', () => {
+        if(gallons_requested_id.value.length > 0 &&
+            delivery_d.value.length > 0) {
+               getQuote.removeAttribute('disabled');
+               submitForm.removeAttribute('disabled');
+           }
+        else{
+            getQuote.setAttribute('disabled', 'disabled');
+            submitForm.setAttribute('disabled', 'disabled');
+        }
+    })
+    //update pricing module
     function calculateTotal() {
-      var x = document.getElementById("gallons_requested_id").value;
-      var y = document.getElementById("price_id").value;
-      document.getElementById("total_id").value = "$" + x * y;
+      var x = parseFloat(document.getElementById('gallons_requested_id').value);
+      var y = parseFloat(document.getElementById('price_id').value);
+      document.getElementById('total_id').value = "$" + x*y;
     }
 </script>
 </html>

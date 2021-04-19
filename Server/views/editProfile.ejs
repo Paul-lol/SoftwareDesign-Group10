@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <link rel ="stylesheet" href="/css/profile.css">
+  <link rel ="stylesheet" href="/css/editProfile.css">
 </head>
 
 <body>   
@@ -24,21 +24,21 @@
         <div class="form-group">
 <label for="full_name_id" class="control-label">Full Name</label>
             <input type="text" maxlength="50" pattern="^[a-zA-Z ]+$" required
-                title="50 characters maximum(alphabetic characters only)." class="form-control" id="full_name_id"
+                title="50 characters maximum(alphabetic characters only)." class="form-control" id="full_name_id" autocomplete="on"
                 name="full_name" placeholder="Raj Singh" required="required" />
     </div>
 <div class="form-group">
             <!-- Street 1 -->
             <label for="street1_id" class="control-label">Street Address 1</label>
             <input type="text" maxlength="100" required title="100 characters maximum" class="form-control"
-                id="street1_id" name="street1" placeholder="Street address, P.O. box, company name, c/o"
+                id="street1_id" autocomplete="on" name="street1" placeholder="Street address, P.O. box, company name, c/o"
                 required="required" />
         </div>
 
         <div class="form-group">
             <!-- Street 2 -->
             <label for="street2_id" class="control-label">Street Address 2</label>
-            <input type="text" maxlength="100" title="100 characters maximum" class="form-control" id="street2_id"
+            <input type="text" maxlength="100" title="100 characters maximum" class="form-control" id="street2_id" autocomplete="on"
                 name="street2" placeholder="Apartment, suite, unit, building, floor, etc. (Optional)" />
         </div>
     
@@ -46,7 +46,7 @@
             <!-- City-->
             <label for="city_id" class="control-label">City</label>
             <input type="text" maxlength="100" pattern="[a-zA-Z ]+" required title="100 characters maximum"
-                class="form-control" id="city_id" name="city" placeholder="Houston" required="required" />
+                class="form-control" id="city_id" autocomplete="on" name="city" placeholder="Houston" required="required" />
         </div>
 
         <div class="form-group">
@@ -111,12 +111,15 @@
             <!-- Zip Code-->
             <label for="zip_id" class="control-labelZ">Zip Code</label>
             <input type="text" pattern="\d*" minlength="5" maxlength="9" size=10 required
-                title="5 to 9 characters (Numerical characters only)" class="form-control" id="zip_id" name="zip"
+                title="5 to 9 characters (Numerical characters only)" class="form-control" id="zip_id" autocomplete="on" name="zip"
                 placeholder="#####" required="true" />
             <br>
     <div class="form-group">
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+
+            <!-- Reset Button -->
+            <button type="reset" class="btn btn-warning btn-lg">Reset</button>
         </div>
         </div>
     </form>
