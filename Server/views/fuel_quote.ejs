@@ -52,7 +52,7 @@
             <div class="form-group">
                 <label for="price_id" class="control-label">Suggested Price per Gallon</label>
                 <input type="text" class="form-control"
-                    id="price_id" name="price_per_gallon" value="2.00" readonly/>
+                    id="price_id" name="price_per_gallon" readonly/>
             </div>
 
         <!-- Total Amount Due (numeric non-editable, calculated (gallons * price)) -->
@@ -91,9 +91,34 @@
     })
     //update pricing module
     function calculateTotal() {
-      var x = parseFloat(document.getElementById('gallons_requested_id').value);
-      var y = parseFloat(document.getElementById('price_id').value);
-      document.getElementById('total_id').value = "$" + x*y;
+    if ($("#gallons_requested_id").val() < 0 )
+    {
+        $("#gallons_requested_id").val()
+        return;
+    }
+
+    let current_price = 1.50;
+    let location_factor = 0.04;
+    if("{{editProfile.state_id}}".toUpperCase() == "TX") //does not go through the if statement
+    {
+        location_factor = 0.02;
+    }
+    let gallons_factor = 0.03;
+    if ($("#gallons_requested_id").val() > 1000)
+    {
+        gallons_factor = 0.02;
+    }
+    let profit_factor = 0.1;
+
+    let margin = current_price * (location_factor + gallons_factor + profit_factor);
+    let suggested = current_price + margin;
+    let total = suggested * $("#gallons_requested_id").val();
+
+    $("#price_id").val(suggested.toFixed(2));
+    $("#total_id").val(total.toFixed(2));
+      //var x = parseFloat(document.getElementById('gallons_requested_id').value);
+      //var y = parseFloat(document.getElementById('price_id').value);
+      //document.getElementById('total_id').value = "$" + x*y;
     }
 </script>
 </html>
