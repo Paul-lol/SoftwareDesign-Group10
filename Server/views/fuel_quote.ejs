@@ -91,15 +91,23 @@
     })
     //update pricing module
     function calculateTotal() {
+    
     if ($("#gallons_requested_id").val() < 0 )
     {
         $("#gallons_requested_id").val()
         return;
     }
 
+    let first_time = <%=location_f%>;
+    let history_factor = 0.0;
     let current_price = 1.50;
     let location_factor = 0.04;
-    if("{{editProfile.state_id}}".toUpperCase() == "TX") //does not go through the if statement
+    let state = "<%=user.state%>";
+    console.log(first_time);
+    if(!first_time){
+        history_factor = 0.01;
+    }
+    if(state === "TX") //does not go through the if statement
     {
         location_factor = 0.02;
     }
@@ -110,7 +118,8 @@
     }
     let profit_factor = 0.1;
 
-    let margin = current_price * (location_factor + gallons_factor + profit_factor);
+    console.log(history_factor);
+    let margin = current_price * (location_factor - history_factor + gallons_factor + profit_factor);
     let suggested = current_price + margin;
     let total = suggested * $("#gallons_requested_id").val();
 

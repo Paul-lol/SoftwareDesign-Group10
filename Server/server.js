@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
 const userInfoSchema = new mongoose.Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
-    new_user: { type: Boolean, default: true}
+    new_user: { type: Boolean, default: true},
 });
 const fuelQuoteSchema = new mongoose.Schema({
     gallons: { type: Number, required: true },
@@ -40,7 +40,7 @@ const fuelQuoteSchema = new mongoose.Schema({
     delivery_date: { type: Date, required: true },
     price_per: { type: Number, required: true },
     total: { type: Number, required: true },
-    username: { type: String, required: true }
+    username: { type: String, required: true },
 });
 
 const User = mongoose.model("User", userSchema);
@@ -82,7 +82,6 @@ app.use(passport.session())
 app.use(methodOverride('_method'))
 
 app.get('/', checkAuthenticated, async (req, res) => {
-    console.log(req.user);
     const filter = { username: req.user.username }
     if(req.user.new_user){
         const update = { new_user: false }
@@ -178,8 +177,8 @@ app.post('/editProfile', checkAuthenticated, async (req,res) => {
         username: req.user.username
     }, { upsert: true });
     await User.find(filter).then(async (info) => {
-        console.log("info");
-        console.log(info);
+        //console.log("info");
+        //console.log(info);
         userInfo = { 
             full_name: info[0].full_name,
             street1: info[0].street1,
@@ -222,7 +221,10 @@ app.get('/history', checkAuthenticated, async (req, res) => {
     res.render('history.ejs', {hist: hist});
     hist.splice(0, hist.length);
 })
-app.get('/fuel_quote', checkAuthenticated, (req, res) => {res.render('fuel_quote.ejs', {user:userInfo});})
+app.get('/fuel_quote', checkAuthenticated, (req, res) => {
+
+    res.render('fuel_quote.ejs', {user:userInfo, location_f: req.user.first_time});
+})
 
 
 
@@ -230,12 +232,17 @@ function Fuel_quote(gallons, d_address, d_date, price_per) {
     this.gallons = gallons; 
     this.d_address = d_address;
     this.d_date = d_date;
-    this.price_per = price_per;
+    //this.price_per = price_per;
     this.total = gallons * price_per;
 }
 
 app.post('/fuel_quote', checkAuthenticated, async (req,res) => {
-    console.log(req.user.username);
+    //console.log(req.user.username);
+    const filter = { username: req.user.username }
+    if(req.user.first_time){
+        const update = { first_time: false }
+        await UserInfo.findOneAndUpdate(filter, update)
+    }
     let fuel = new Fuel_quote(req.body.gallons_requested,
         req.body.delivery_address,
         req.body.delivery_date,
@@ -245,12 +252,11 @@ app.post('/fuel_quote', checkAuthenticated, async (req,res) => {
         gallons: fuel.gallons,
         delivery_address: fuel.d_address,
         delivery_date: fuel.d_date,
-        price_per: fuel.price_per,
+        price_per: 1.50,
         total: fuel.total,
         username: req.user.username
     })
     await fuelQuote.save();
-    console.log()
     res.redirect('/history');
 })
 
