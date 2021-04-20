@@ -51,7 +51,6 @@ const initializePassport = require('./passport-config')
 const { join } = require('path')
 const { truncateSync } = require('fs')
 
-const dbUsers = [];
 initializePassport(
     passport, 
     inputUsername => dbUsers.find(user => user.inputUsername === inputUsername),
@@ -225,6 +224,8 @@ app.get('/history', checkAuthenticated, async (req, res) => {
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {res.render('fuel_quote.ejs', {user:userInfo});})
 
+
+
 function Fuel_quote(gallons, d_address, d_date, price_per) { 
     this.gallons = gallons; 
     this.d_address = d_address;
@@ -281,6 +282,7 @@ module.exports = {
     user: function() {
         return userInfo;
     },
+    
     fuel_quote: function() {
         return Fuel_quote;
     },
