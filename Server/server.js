@@ -268,7 +268,7 @@ app.post('/fuel_quote', checkAuthenticated, async (req,res) => {
         req.body.delivery_date,
         req.body.price_per_gallon, 
         req.body.total_due);
-    console.log(req.body.price_per_gallon)
+    //console.log(req.body.price_per_gallon)
     const fuelQuote = new FuelQuote({
         gallons: fuel.gallons,
         delivery_address: fuel.d_address,
