@@ -4,23 +4,29 @@ const mongoose = require('mongoose')
 const UserInfo = require('./models/UserInfo')
 
 function initialize(passport, getUserbyUsername, getUserById){
-    const authenticateUser = async (inputUsername, inputPassword, done) => {
-        UserInfo.findOne({username: inputUsername})
-        .then( user => {
-        //console.log(user);
-        if(user == null) {
-            return done(null, false, { message: 'User does not exist' })
-        }
-        else if (bcrypt.compare(inputPassword, user.password)) {
-            return done(null, user)
-        } else {
-            return done(null, false, { message: 'Password incorrect' })
-        }
+    passport.use(
+        new LocalStrategy({usernameField: 'username' }, (inputUsername, inputPassword, done) => {
+            UserInfo.findOne({username: inputUsername})
+                .then(user => {
+                    if(!user) { 
+                        return done(null, false, { message: 'User does not exist' })
+                    }
+
+                    // Match Password 
+                    bcrypt.compare(inputPassword, user.password, (err, isMatch) => {
+                        if(err) throw err; 
+
+                        if(isMatch) { 
+                            return done(null, user); 
+                        }
+                        else { 
+                            return done(null, false, {message: 'Password is incorrect'})
+                        }
+                    });
+                })
+                .catch(err=> console.log(err));
         })
-        .catch (err => console.log(err));
-    }
-    passport.use(new LocalStrategy({ usernameField: 'username'}, 
-    authenticateUser))
+    )
     passport.serializeUser((user, done) => done(null, user._id))
     passport.deserializeUser((id, done) => {
         UserInfo.findById(id, function(err, user) {
