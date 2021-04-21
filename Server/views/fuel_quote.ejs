@@ -103,7 +103,7 @@
     let current_price = 1.50;
     let location_factor = 0.04;
     let state = "<%=user.state%>";
-    console.log(first_time);
+    //console.log(first_time);
     if(!first_time){
         history_factor = 0.01;
     }
@@ -112,18 +112,19 @@
         location_factor = 0.02;
     }
     let gallons_factor = 0.03;
-    if ($("#gallons_requested_id").val() > 1000)
+    if ($("#gallons_requested_id").val() > 1000.00)
     {
         gallons_factor = 0.02;
     }
     let profit_factor = 0.1;
 
-    console.log(history_factor);
+    // console.log(history_factor);
     let margin = current_price * (location_factor - history_factor + gallons_factor + profit_factor);
     let suggested = current_price + margin;
     let total = suggested * $("#gallons_requested_id").val();
+    //console.log(total)
 
-    $("#price_id").val(suggested.toFixed(2));
+    $("#price_id").val(suggested);
     $("#total_id").val(total.toFixed(2));
       //var x = parseFloat(document.getElementById('gallons_requested_id').value);
       //var y = parseFloat(document.getElementById('price_id').value);
