@@ -98,13 +98,13 @@
         return;
     }
 
-    let first_time = <%=location_f%>;
+    let first_time = "<%=location_f%>";
     let history_factor = 0.0;
     let current_price = 1.50;
     let location_factor = 0.04;
     let state = "<%=user.state%>";
     console.log(first_time);
-    if(!first_time){
+    if(first_time === "false"){
         history_factor = 0.01;
     }
     if(state === "TX") //does not go through the if statement
