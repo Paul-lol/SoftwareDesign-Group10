@@ -191,6 +191,10 @@ app.post('/editProfile', checkAuthenticated, async (req,res) => {
     //console.log(userInfo);
     res.redirect('/profile');
 })
+app.get('/logout', (req, res) => {
+    req.logOut()
+    res.redirect('/login')
+})
 
 app.delete('/logout', (req, res) => {
     req.logOut()
