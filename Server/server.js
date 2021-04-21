@@ -232,7 +232,7 @@ function Fuel_quote(gallons, d_address, d_date, price_per) {
     this.gallons = gallons; 
     this.d_address = d_address;
     this.d_date = d_date;
-    //this.price_per = price_per;
+    this.price_per = price_per;
     this.total = gallons * price_per;
 }
 
@@ -248,11 +248,12 @@ app.post('/fuel_quote', checkAuthenticated, async (req,res) => {
         req.body.delivery_date,
         req.body.price_per_gallon, 
         req.body.total_due);
+    console.log(req.body.price_per_gallon)
     const fuelQuote = new FuelQuote({
         gallons: fuel.gallons,
         delivery_address: fuel.d_address,
         delivery_date: fuel.d_date,
-        price_per: 1.50,
+        price_per: fuel.price_per,
         total: fuel.total,
         username: req.user.username
     })
