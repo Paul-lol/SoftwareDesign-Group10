@@ -30,7 +30,7 @@
     <!-- Gallons Requested (numeric, required) -->
 <label for="gallons_quantity" class="control-label">Gallons Requested</label>
             <input type=number class="form-control" id="gallons_requested_id"
-                name="gallons_requested" min ="0" step=any placeholder="100.00" required=true "/>
+                name="gallons_requested" min ="0" step=any placeholder="100.00" onkeyup="disableSubmit()" required=true "/>
 <br>
 
 <div class="form-group">
@@ -89,6 +89,10 @@
             submitForm.setAttribute('disabled', 'disabled');
         }
     })
+    function disableSubmit() {
+        submitForm.setAttribute('disabled', 'disabled');
+    }
+
     //update pricing module
     function calculateTotal() {
     
@@ -129,6 +133,7 @@
       //var x = parseFloat(document.getElementById('gallons_requested_id').value);
       //var y = parseFloat(document.getElementById('price_id').value);
       //document.getElementById('total_id').value = "$" + x*y;
+    submitForm.removeAttribute('disabled');
     }
 </script>
 </html>
