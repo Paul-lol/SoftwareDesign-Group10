@@ -42,11 +42,49 @@ describe('Server',function(){
             })
     })
 
+    it("It GET the updated client form to the profile", (done) => {
+        const user = {
+            full_name: 'Darwin Morales', 
+            street1: '24 Black Mamba St', 
+            street2: 'Ste 8',
+            state: 'TX',
+            city: 'Houston', 
+            zip: '77532'
+        }
+        chai.request(server)
+            .get("/profile")
+            .send(user)
+            .end((err, response) => {
+                response.should.have.status(200);
+                response.body.should.be.a('object');
+            done();
+            })
+        })
+
+    it("It GET the wrong client form to the profile", (done) => {
+        const user = {
+            full_name: ' test', 
+            street1: '@test', 
+            street2: 'N/A',
+            state: 'AD',
+            city: 'Test123', 
+            zip: '0'
+         }
+            chai.request(server)
+            .get("/notprofile")
+            .send(user)
+            .end((err, response) => {
+             response.should.have.status(404);
+             response.body.should.be.a('object');
+             done();
+        })
+    })
+
     describe("POST /login", () => {
         it("It should authenticate login", (done) => {
           const user = {
             username: "Darwin",
-            password: "123",
+            password: "Morales",
           };
           chai
             .request(server)
@@ -76,7 +114,7 @@ describe('Server',function(){
       describe("POST /login", () => {
         it("Password DOES exist", (done) => {
           const user = {
-            password: "123"
+            password: "Morales"
           };
           chai
             .request(server)
@@ -104,12 +142,22 @@ describe('Server',function(){
 
 
     describe("GET /editProfile", () => {
-        it("It should render the fuel_quote page with an OK status", (done) => {
+        it("It should render the editProfile page with an OK status", (done) => {
             chai.request(server)
                 .get("/editProfile")
                 .end((err, response) => {
                     response.body.should.be.a('object');
                     response.should.have.status(200);
+                done();
+                })
+        })
+
+        it("It should not render the editProfile page with an OK status", (done) => {
+            chai.request(server)
+                .get("/editProfiles")
+                .end((err, response) => {
+                    response.body.should.be.a('object');
+                    response.should.have.status(404);
                 done();
                 })
         })
@@ -119,11 +167,30 @@ describe('Server',function(){
         it("It POST the user credentials to the server", (done) => {
             const user = {
                 full_name: 'Darwin Morales', 
-                street1: '24 Black Mamba Hwy', 
+                street1: '24 Black Mamba St', 
                 street2: 'Ste 8',
-                state: 'CA',
-                city: 'Los Angeles', 
-                zip: '12345'
+                state: 'TX',
+                city: 'Houston', 
+                zip: '77532'
+            }
+            chai.request(server)
+                .post("/editProfile")
+                .send(user)
+                .end((err, response) => {
+                    response.should.have.status(200);
+                    response.body.should.be.a('object');
+                done();
+                })
+        })
+
+        it("It POST the wrong user credentials to the server", (done) => {
+            const user = {
+                full_name: 'Test', 
+                street1: '24 Test St', 
+                street2: ' ',
+                state: 'LY',
+                city: 'none', 
+                zip: '0'
             }
             chai.request(server)
                 .post("/editProfile")
@@ -158,7 +225,60 @@ describe('Server',function(){
                 done();
                 })
         })
+        it("It should authenticate fuel quote form is valid", (done) => {
+            const user = {
+              gallons: "1500",
+              date: "04/22/2021",
+            };
+            chai
+            .request(server)
+            .post("/fuel_quote")
+            .send(user)
+            .end((err, response) => {
+              response.should.have.status(200);
+              done();
+            });
+
+        it("It should authenticate fuel quote form is invalid", (done) => {
+            const user = {
+              gallons: "0",
+              date: "nodate",
+            };
+            chai
+            .request(server)
+            .post("/fuel_quote")
+            .send(user)
+            .end((err, response) => {
+              response.should.have.status(404);
+              done();
+            });
+        });
+        
+        
     })
+});
+
+describe("GET /logout", () => {
+    it("It should logout with an OK status", (done) => {
+        chai.request(server)
+            .get("/logout")
+            .end((err, response) => {
+                response.body.should.be.a('object');
+                response.should.have.status(200);
+            done();
+            })
+    })
+
+    it("It did not logout with an OK status", (done) => {
+        chai.request(server)
+            .get("/logoutt")
+            .end((err, response) => {
+                response.body.should.be.a('object');
+                response.should.have.status(404);
+            done();
+            })
+    })
+})
 
     describe("GET /", () => {
         it("Should get the home page with 200 status", (done) => {
@@ -183,7 +303,7 @@ describe('Server',function(){
     })
 
     describe("GET /register", () => {
-        it("Should get the login page with 200 status", (done) => {
+        it("Should get the register page with 200 status", (done) => {
             chai.request(server)
                 .get("/register")
                 .end((err, response) => {
@@ -193,8 +313,23 @@ describe('Server',function(){
         })
     })
 
+    describe("POST /register", () => {
+        it("It should authenticate registration", (done) => {
+            const user = {
+              username: "Darwin",
+              password: "Morales",
+            };
+            chai.request(server)
+                .post("/register")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                done();
+                })
+        })
+    })
+
     describe("GET /history", () => {
-        it("Should get the login page with 200 status", (done) => {
+        it("Should get the history page with 200 status", (done) => {
             chai.request(server)
                 .get("/history")
                 .end((err, response) => {
@@ -205,7 +340,7 @@ describe('Server',function(){
     })
 
     describe("GET /api/history", () => {
-        it("Should get the login page with 200 status", (done) => {
+        it("Should get the history page with 200 status", (done) => {
             chai.request(server)
                 .get("/api/history")
                 .end((err, response) => {
@@ -216,7 +351,7 @@ describe('Server',function(){
     })
 
     describe("POST /register", () => {
-        it("Should Post registeration info with 200 status", (done) => {
+        it("Should Post registration info with 200 status", (done) => {
             chai.request(server)
                 .post("/register")
                 .end((err, response) => {
@@ -306,7 +441,7 @@ describe('Server',function(){
     })
 
      //check ZIP
-     it('checkZip should return 77654', function(){
+     it('checkZip should return 77532', function(){
         assert.notEqual(checkZipResult, '77654');
     })
 
