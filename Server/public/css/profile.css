@@ -23,12 +23,6 @@ body {
   .col-11 {width: 91.66%;}
   .col-12 {width: 100%;}
 }
-
-/* padding for the form  */
-.form-group {
-  padding-left: 50px;
-}
-
 /* Style the links inside the navigation bar */
 .topnav a {
   float: left;
@@ -93,7 +87,7 @@ footer {
 }
 
 #container {
-  width: 45%;
+  width: 100%;
 }
 #left {
   float: left;
