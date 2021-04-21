@@ -16,10 +16,13 @@
         <a href="/profile">Profile</a>
         <a class="active" href="/fuel_quote">Fuel Quote Form</a>
         <a href="/history">Quote History</a>
-        <div class="logout">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+          </ul>
+        <!--<div class="logout">
            <form action = "/logout?_method=DELETE" method="POST">
             <button type="submit" class="btn btn-large"><span class="glyphicon glyphicon-log-out"></span> Log Out</button>
-        </form>
+        </form>-->
         </div>
         
       </div>
@@ -102,7 +105,7 @@
         return;
     }
 
-    let first_time = <%=location_f%>;
+    let first_time = <%= location_f %>;
     let history_factor = 0.0;
     let current_price = 1.50;
     let location_factor = 0.04;
@@ -111,7 +114,7 @@
     if(!first_time){
         history_factor = 0.01;
     }
-    if(state === "TX") //does not go through the if statement
+    if(state === "TX") 
     {
         location_factor = 0.02;
     }
