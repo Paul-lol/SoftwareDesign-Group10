@@ -222,8 +222,28 @@ app.get('/history', checkAuthenticated, async (req, res) => {
     hist.splice(0, hist.length);
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {
-
-    res.render('fuel_quote.ejs', {user:userInfo, location_f: req.user.first_time});
+    let currentDate = new Date();
+    let cDay = currentDate.getDate()
+    let cMonth = currentDate.getMonth() + 1
+    let cYear = currentDate.getFullYear()
+    let min_date = cYear + '-' + cMonth + '-' + cDay
+    if(cMonth < 10){
+        min_date = cYear + '-0' + cMonth
+        if(cDay < 10){
+            min_date = min_date + '-0' + cDay
+        } else{
+            min_date = min_date + '-' + cDay
+        }
+    } else{
+        min_date = cYear + '-' + cMonth
+        if(cDay < 10){
+            min_date = min_date + '-0' + cDay
+        } else{
+            min_date = min_date + '-' + cDay
+        }
+    }
+    //console.log(min_date)
+    res.render('fuel_quote.ejs', {user:userInfo, location_f: req.user.first_time, min_date});
 })
 
 
