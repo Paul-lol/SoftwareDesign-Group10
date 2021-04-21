@@ -191,6 +191,10 @@ app.post('/editProfile', checkAuthenticated, async (req,res) => {
     //console.log(userInfo);
     res.redirect('/profile');
 })
+app.get('/logout', (req, res) => {
+    req.logOut()
+    res.redirect('/login')
+})
 
 app.delete('/logout', (req, res) => {
     req.logOut()
@@ -222,8 +226,28 @@ app.get('/history', checkAuthenticated, async (req, res) => {
     hist.splice(0, hist.length);
 })
 app.get('/fuel_quote', checkAuthenticated, (req, res) => {
-
-    res.render('fuel_quote.ejs', {user:userInfo, location_f: req.user.first_time});
+    let currentDate = new Date();
+    let cDay = currentDate.getDate()
+    let cMonth = currentDate.getMonth() + 1
+    let cYear = currentDate.getFullYear()
+    let min_date = cYear + '-' + cMonth + '-' + cDay
+    if(cMonth < 10){
+        min_date = cYear + '-0' + cMonth
+        if(cDay < 10){
+            min_date = min_date + '-0' + cDay
+        } else{
+            min_date = min_date + '-' + cDay
+        }
+    } else{
+        min_date = cYear + '-' + cMonth
+        if(cDay < 10){
+            min_date = min_date + '-0' + cDay
+        } else{
+            min_date = min_date + '-' + cDay
+        }
+    }
+    //console.log(min_date)
+    res.render('fuel_quote.ejs', {user:userInfo, location_f: req.user.first_time, min_date});
 })
 
 
@@ -232,7 +256,7 @@ function Fuel_quote(gallons, d_address, d_date, price_per) {
     this.gallons = gallons; 
     this.d_address = d_address;
     this.d_date = d_date;
-    //this.price_per = price_per;
+    this.price_per = price_per;
     this.total = gallons * price_per;
 }
 
@@ -248,11 +272,12 @@ app.post('/fuel_quote', checkAuthenticated, async (req,res) => {
         req.body.delivery_date,
         req.body.price_per_gallon, 
         req.body.total_due);
+    //console.log(req.body.price_per_gallon)
     const fuelQuote = new FuelQuote({
         gallons: fuel.gallons,
         delivery_address: fuel.d_address,
         delivery_date: fuel.d_date,
-        price_per: 1.50,
+        price_per: fuel.price_per,
         total: fuel.total,
         username: req.user.username
     })

@@ -16,10 +16,13 @@
         <a href="/profile">Profile</a>
         <a class="active" href="/fuel_quote">Fuel Quote Form</a>
         <a href="/history">Quote History</a>
-        <div class="logout">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+          </ul>
+        <!--<div class="logout">
            <form action = "/logout?_method=DELETE" method="POST">
             <button type="submit" class="btn btn-large"><span class="glyphicon glyphicon-log-out"></span> Log Out</button>
-        </form>
+        </form>-->
         </div>
         
       </div>
@@ -30,7 +33,7 @@
     <!-- Gallons Requested (numeric, required) -->
 <label for="gallons_quantity" class="control-label">Gallons Requested</label>
             <input type=number class="form-control" id="gallons_requested_id"
-                name="gallons_requested" min ="0" step=any placeholder="100.00" required=true "/>
+                name="gallons_requested" min ="0" step=any placeholder="100.00" onkeyup="disableSubmit()" required=true "/>
 <br>
 
 <div class="form-group">
@@ -44,7 +47,7 @@
         <!-- Delivery Date (calendar, date picker) -->
         <div class="form-group">
             <label for="delivery_d" class="control-label">Delivery Date</label>
-            <input type="date" id="delivery_d" name="delivery_date" required=true />  
+            <input type="date" id="delivery_d" name="delivery_date" min= "<%= min_date %>" required=true />  
         </div>
     
 
@@ -89,6 +92,10 @@
             submitForm.setAttribute('disabled', 'disabled');
         }
     })
+    function disableSubmit() {
+        submitForm.setAttribute('disabled', 'disabled');
+    }
+
     //update pricing module
     function calculateTotal() {
     
@@ -98,36 +105,38 @@
         return;
     }
 
-    let first_time = "<%=location_f%>";
+    let first_time = <%= location_f %>;
     let history_factor = 0.0;
     let current_price = 1.50;
     let location_factor = 0.04;
     let state = "<%=user.state%>";
-    console.log(first_time);
-    if(first_time === "false"){
+    //console.log(first_time);
+    if(!first_time){
         history_factor = 0.01;
     }
-    if(state === "TX") //does not go through the if statement
+    if(state === "TX") 
     {
         location_factor = 0.02;
     }
     let gallons_factor = 0.03;
-    if ($("#gallons_requested_id").val() > 1000)
+    if ($("#gallons_requested_id").val() > 1000.00)
     {
         gallons_factor = 0.02;
     }
     let profit_factor = 0.1;
 
-    console.log(history_factor);
+    // console.log(history_factor);
     let margin = current_price * (location_factor - history_factor + gallons_factor + profit_factor);
     let suggested = current_price + margin;
     let total = suggested * $("#gallons_requested_id").val();
+    //console.log(total)
 
-    $("#price_id").val(suggested.toFixed(2));
+    $("#price_id").val(suggested);
     $("#total_id").val(total.toFixed(2));
       //var x = parseFloat(document.getElementById('gallons_requested_id').value);
       //var y = parseFloat(document.getElementById('price_id').value);
       //document.getElementById('total_id').value = "$" + x*y;
+    submitForm.removeAttribute('disabled');
     }
 </script>
 </html>
